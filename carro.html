@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardioCast Interativo: Hipertensão</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <!-- Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Um cinza muito claro */
+            color: #333;
+        }
+        
+        /* Estilos para o gráfico */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px; /* Largura máxima do gráfico */
+            height: 40vh; /* Altura responsiva */
+            max-height: 400px; /* Altura máxima */
+            margin: 0 auto; /* Centraliza o container */
+        }
+        
+        /* Estilos para o vídeo responsivo */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* Proporção 16:9 */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Container Principal -->
+    <div class="max-w-3xl mx-auto p-4 sm:p-6 md:p-8">
+
+        <!-- Título Principal -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-blue-700 mb-2">CardioCast Interativo</h1>
+            <p class="text-xl text-gray-600">Um mergulho nos bastidores da Hipertensão Arterial</p>
+        </header>
+
+        <!-- SEÇÃO DO VÍDEO (NOVO) -->
+        <section id="video" class="mb-10 bg-white p-5 rounded-2xl shadow-lg border border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">O Podcast</h2>
+            <p class="text-gray-700 mb-5">
+                Este é o trabalho que originou tudo. Para nossa matéria de Fisiologia, criamos um podcast no formato de entrevista para "traduzir" os conceitos complexos da saúde cardiovascular de uma forma simples e acessível.
+            </p>
+            <p class="text-gray-700 mb-6">
+                Assista ao episódio completo abaixo e, em seguida, explore os tópicos da conversa de forma interativa nas seções seguintes.
+            </p>
+            
+            <!-- Vídeo Incorporado -->
+            <div class="video-container rounded-lg shadow-md overflow-hidden">
+                <iframe 
+                    src="https://www.youtube.com/embed/RBmgvf09-hU" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </section>
+        
+        <!-- SEÇÃO: O QUE É HIPERTENSÃO -->
+        <section id="o-que-e" class="mb-10 bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">O que é Hipertensão?</h2>
+            <p class="text-lg text-gray-700 mb-4">
+                Popularmente conhecida como "pressão alta", a hipertensão arterial ocorre quando a pressão que o sangue faz nas paredes das artérias é consistentemente elevada, geralmente acima de <span class="font-bold text-red-600">140 por 90 mmHg</span>.
+            </p>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-800 p-4 rounded-lg">
+                <p class="font-bold">A Assassina Silenciosa</p>
+                <p>Muitas vezes, a hipertensão não apresenta sintomas claros. Isso força o coração a trabalhar mais, podendo causar danos graves a órgãos vitais ao longo do tempo.</p>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: COMO O CORAÇÃO FUNCIONA -->
+        <section id="coracao" class="mb-10 bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Como o Coração Funciona?</h2>
+            <p class="text-lg text-gray-700 mb-6">
+                Pense no coração como uma bomba incansável. Ele se contrai e relaxa ritmicamente para manter todo o corpo funcionando. Esse ciclo tem duas fases principais.
+            </p>
+            
+            <!-- Controles Interativos -->
+            <div class="flex justify-center space-x-4 mb-6">
+                <button id="btn-sistole" class="flex-1 py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition duration-300">
+                    Sístole (Contração)
+                </button>
+                <button id="btn-diastole" class="flex-1 py-3 px-6 bg-gray-200 text-gray-800 font-semibold rounded-lg shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-300">
+                    Diástole (Relaxamento)
+                </button>
+            </div>
+            
+            <!-- Conteúdo Dinâmico -->
+            <div id="info-sistole" class="p-5 bg-blue-50 rounded-lg border border-blue-200">
+                <h3 class="text-2xl font-bold text-blue-800 mb-2">Sístole: A Fase de Ejeção</h3>
+                <p class="text-lg text-gray-700">
+                    É a contração do músculo cardíaco. O coração "espreme" o sangue para fora, enviando-o com força para as artérias que o distribuirão por todo o corpo. Esta é a "pressão máxima" (o número maior, ex: 120).
+                </p>
+            </div>
+            
+            <div id="info-diastole" class="p-5 bg-gray-50 rounded-lg border border-gray-200 hidden">
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Diástole: A Fase de Enchimento</h3>
+                <p class="text-lg text-gray-700">
+                    É o relaxamento do músculo cardíaco. O coração "abre" para se encher de sangue novamente, preparando-se para a próxima batida. Esta é a "pressão mínima" (o número menor, ex: 80).
+                </p>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: CAUSAS E FATORES DE RISCO -->
+        <section id="causas" class="mb-10 bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">O que Causa a Pressão Alta?</h2>
+            <p class="text-lg text-gray-700 mb-6">
+                A hipertensão é multifatorial, sendo uma combinação de fatores genéticos e, principalmente, do nosso estilo de vida.
+            </p>
+            
+            <!-- Lista de Causas Interativas -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="causa-item p-4 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="text-xl font-bold text-gray-700">🧂 Dieta (Excesso de Sal)</h3>
+                    <p class="causa-info hidden text-gray-600 mt-2">O sódio retém líquidos no corpo, aumentando o volume de sangue e, consequentemente, a pressão dentro das artérias.</p>
+                </div>
+                <div class="causa-item p-4 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="text-xl font-bold text-gray-700">🏃 Sedentarismo</h3>
+                    <p class="causa-info hidden text-gray-600 mt-2">A falta de atividade física regular contribui para o ganho de peso e enfraquece o sistema cardiovascular.</p>
+                </div>
+                <div class="causa-item p-4 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="text-xl font-bold text-gray-700">🧬 Genética e Idade</h3>
+                    <p class="causa-info hidden text-gray-600 mt-2">Ter histórico familiar de hipertensão aumenta o risco. Além disso, as artérias tendem a enrijecer com a idade.</p>
+                </div>
+                <div class="causa-item p-4 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="text-xl font-bold text-gray-700">🚬 Tabagismo e Álcool</h3>
+                    <p class="causa-info hidden text-gray-600 mt-2">Substâncias como a nicotina causam contração dos vasos. O álcool em excesso também eleva a pressão arterial.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SEÇÃO: PREVENÇÃO E CONTROLE (COM GRÁFICO) -->
+        <section id="prevencao" class="mb-10 bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Prevenção e Controle</h2>
+            <p class="text-lg text-gray-700 mb-6">
+                A boa notícia é que a hipertensão pode ser prevenida e controlada. A chave está em hábitos de vida saudáveis e acompanhamento médico regular.
+            </p>
+            
+            <!-- Container do Gráfico -->
+            <div class="chart-container">
+                <canvas id="preventionChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Rodapé -->
+        <footer class="text-center mt-12 py-6 border-t border-gray-300">
+            <p class="text-gray-500">
+                Este foi um projeto interativo baseado no podcast "CardioCast".
+            </p>
+            <p class="text-gray-500">Trabalho de Fisiologia Humana - 2025</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript do Aplicativo -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- LÓGICA 1: SÍSTOLE E DIÁSTOLE ---
+            const btnSistole = document.getElementById('btn-sistole');
+            const btnDiastole = document.getElementById('btn-diastole');
+            const infoSistole = document.getElementById('info-sistole');
+            const infoDiastole = document.getElementById('info-diastole');
+
+            btnSistole.addEventListener('click', () => {
+                infoSistole.classList.remove('hidden');
+                infoDiastole.classList.add('hidden');
+                
+                // Estiliza botões
+                btnSistole.classList.add('bg-blue-600', 'text-white');
+                btnSistole.classList.remove('bg-gray-200', 'text-gray-800');
+                
+                btnDiastole.classList.add('bg-gray-200', 'text-gray-800');
+                btnDiastole.classList.remove('bg-blue-600', 'text-white');
+            });
+
+            btnDiastole.addEventListener('click', () => {
+                infoDiastole.classList.remove('hidden');
+                infoSistole.classList.add('hidden');
+                
+                // Estiliza botões
+                btnDiastole.classList.add('bg-blue-600', 'text-white');
+                btnDiastole.classList.remove('bg-gray-200', 'text-gray-800');
+                
+                btnSistole.classList.add('bg-gray-200', 'text-gray-800');
+                btnSistole.classList.remove('bg-blue-600', 'text-white');
+            });
+
+            // --- LÓGICA 2: CAUSAS (ACCORDION) ---
+            const causaItems = document.querySelectorAll('.causa-item');
+            causaItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const info = item.querySelector('.causa-info');
+                    // Fecha todos os outros abertos
+                    causaItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.querySelector('.causa-info').classList.add('hidden');
+                            otherItem.classList.remove('bg-blue-50', 'border-blue-200');
+                        }
+                    });
+                    
+                    // Alterna (toggle) o item clicado
+                    info.classList.toggle('hidden');
+                    item.classList.toggle('bg-blue-50');
+                    item.classList.toggle('border-blue-200');
+                });
+            });
+
+            // --- LÓGICA 3: GRÁFICO DE PREVENÇÃO (CHART.JS) ---
+            const ctx = document.getElementById('preventionChart').getContext('2d');
+            
+            // Função para quebrar labels longas
+            function formatLabel(str) {
+                if (str.length <= 16) return str;
+                let parts = [];
+                let currentLine = '';
+                str.split(' ').forEach(word => {
+                    if (currentLine.length + word.length + 1 > 16) {
+                        parts.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        currentLine += (currentLine.length > 0 ? ' ' : '') + word;
+                    }
+                });
+                parts.push(currentLine);
+                return parts;
+            }
+
+            const data = {
+                labels: [
+                    formatLabel('Reduzir Sal e Ultraprocessados'), 
+                    formatLabel('Atividade Física Regular'), 
+                    formatLabel('Controlar o Peso'), 
+                    formatLabel('Cuidar do Sono'), 
+                    formatLabel('Evitar Tabaco e Álcool'), 
+                    formatLabel('Acompanhamento Médico')
+                ],
+                datasets: [{
+                    label: 'Pilares da Prevenção',
+                    data: [20, 20, 15, 15, 15, 15], // Valores iguais para um visual de pizza
+                    backgroundColor: [
+                        '#2563EB', // blue-600
+                        '#3B82F6', // blue-500
+                        '#60A5FA', // blue-400
+                        '#93C5FD', // blue-300
+                        '#BFDBFE', // blue-200
+                        '#DBEAFE'  // blue-100
+                    ],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 3
+                }]
+            };
+
+            const config = {
+                type: 'doughnut', // Tipo de gráfico: rosca
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Permite que o CSS controle o tamanho
+                    animation: {
+                        animateScale: true
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom', // Posição da legenda
+                            labels: {
+                                font: {
+                                    family: "'Inter', sans-serif",
+                                    size: 12
+                                },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            titleFont: {
+                                family: "'Inter', sans-serif",
+                                weight: 'bold',
+                                size: 14
+                            },
+                            bodyFont: {
+                                family: "'Inter', sans-serif",
+                                size: 12
+                            },
+                            callbacks: {
+                                // Formata a label do tooltip para remover a quebra de linha
+                                title: function(tooltipItems) {
+                                    let label = tooltipItems[0].label;
+                                    if (Array.isArray(label)) {
+                                        label = label.join(' ');
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Criar o gráfico
+            new Chart(ctx, config);
+        });
+    </script>
+
+</body>
+</html>
